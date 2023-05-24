@@ -1,4 +1,4 @@
-class SwapiServices {
+export default class SwapiServices {
     _api = "https://swapi.dev/api/"
      async getResourse (url)  {
       const res = await fetch(`${this._api}${url}`)
@@ -9,8 +9,9 @@ class SwapiServices {
       }
       return await res.json();
     };
-    getAllPeople(){
-      return this.getResourse("/people/")
+    async getAllPeople(){
+      const res = await this.getResourse("/people/")
+      return res.results
     }
     getPerson(id){
       return this.getResourse(`/people/${id}`)
@@ -19,23 +20,28 @@ class SwapiServices {
     getStarShip(id){
         return this.getResourse(`/starships/${id}/`)
     }
-    getAllStartShip(){
-        return this.getResourse("/starships/")
+    async getAllStartShip(){
+      const res = await this.getResourse("/starships/")
+      return res.results
     }
     getPlanets(id){
         return this.getResourse(`/planets/${id}/`)
     }
-    getAllPlanets(){
-        return this.getResourse("/planets/")
+    async getAllPlanets(){
+      const res = await this.getResourse("/planets/")
+        return 
     }
     getVehicles(id){
         return this.getResourse(`/vehicles/${id}/`)
     }
-    getAllVehicles(){
-        return this.getResourse("/vehicles/")
+    async getAllVehicles(){
+      const res = await this.getResourse("/vehicles/")
+      return res.results
     }
   }
   const swapi = new SwapiServices();
-  swapi.getAllPeople().then((body)=>{
-    console.log(body)
+  swapi.getAllPeople().then((people)=>{
+    people.forEach((p)=> {
+      console.log(p.name);
+    });
   })
