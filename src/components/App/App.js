@@ -29,10 +29,10 @@ export default class App extends Component {
     this.setState({ selectedItem });
   };
   render() {
-    
+    const {getPerson,getStarship, getPersonimage, getStarshipimage}= this.swapiServices
     const planet = this.state.showRandomPlanet ? <RandomPlanet /> : null;
-    const personDetails = (<ItemDetails itemId ={11} getData = {this.SwapiServices}/>) 
-    const starShipDetails = <ItemDetails itemId = {11} getData = {this.SwapiServices}/>
+    const personDetails = (<ItemDetails itemId ={11} getData = {getPerson} getImageUrl = {getPersonimage}/>) 
+    const starShipDetails = <ItemDetails itemId = {5} getData = {getStarship} getImageUrl= {getStarshipimage}/>
     return (
       <div className="App">
         <Header />

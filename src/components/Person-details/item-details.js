@@ -5,21 +5,21 @@ import SwapiServices from "../../fetch";
 export default class ItemDetails extends Component {
   swapiServices = new SwapiServices()
   state={
-    person:{},
-    image:null,
+    item:{},
+    image: null,
   }
   componentDidMount(){
     this.updateItem();
   }
   updateItem(){
-    const {itemId, getData,getImageUrl} = this.props;
+    const {itemId, getData, getImageUrl} = this.props;
     if(!itemId){
       return
     }
     getData(itemId)
-    .then((person)=>{
-      this.setState({person,
-      image:getImageUrl(person)})
+    .then((item)=>{
+      this.setState({item,
+      image: getImageUrl(item)})
     })
   }
   componentDidUpdate(prevProps){
@@ -28,9 +28,9 @@ export default class ItemDetails extends Component {
     }
   }
   render() {
-    const {item ,image}=this.state
-    const {id,name,gender,birthYear,eyeColor} = item
-    if(!this.state.person){
+    const {item,image}=this.state;
+    const {name,gender,birthYear,eyeColor} = item
+    if(!this.state.item){
       return <span>Select a person from list</span>
     }
     return (
@@ -38,7 +38,7 @@ export default class ItemDetails extends Component {
       <div className="person-details card">
         <img
           className="person-image"
-          src={`https://starwars-visualguide.com/assets/img/characters/${id}.jpg`}
+          src={image}
           alt=""
         />
         <div className=" card-body">
