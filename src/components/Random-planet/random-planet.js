@@ -1,61 +1,87 @@
-import React, { Component } from 'react'
-import R2D2 from '../img/R2-D2.jpg'
-import './random-planet.css'
-import SwapiServices from '../../fetch.js'
+import React, { Component } from "react";
+import "./random-planet.css";
+import SwapiServices from "../../fetch";
+import Spinner from "../spinner/spinner";
+import ErrorIndicator from "../ErrorIndicator/errorIndicator";
 
-class RandomPlanet extends Component{
-    swapiService = new SwapiServices()
-    state = {
-        id: null,
-        name: 'Yavin IV', 
-        population: 1.000,
-        rotationperiod: '24 days',
-        size: '10,200km',
-    }
+class RandomPlanet extends Component {
+  swapiService = new SwapiServices();
+  state = {
+    planet: {},
+    loading: true,
+    error: false,
+  }; 
+  componentDidMount(){
+    this.updatePlanet()
+    this.interval = setInterval(this.updatePlanet,15000)
+  }
+  onPLanetLoaded = (planet)=>{
+    this.setState({planet,
+    loading:false,
+    error: false})
+  }
+  onError = (err)=>{
+    this.setState({error:true,
+    loading: false,})
+  }
 
-    constructor(){
-        super()
-        this.updatePlanet()
-    }
+  updatePlanet =()=> {
+    const id = Math.floor(Math.random()*25) + 2;
+    this.swapiService
+    .getPlanet(id)
+    .then(this.onPLanetLoaded)
+    .catch(this.onError);
+  }
 
-    updatePlanet() {
-        const id = 10
-        this.swapiService.getPlanets(id).then((planet) => {
-          this.setState({
-            id,
-            name: planet.name,
-            population: planet.population,
-            rotationperion: planet.rotation_period,
-            diameter: planet.diameter,
-          })
-        });
-      }
-    render(){
-        const {id,population,rotationperiod,size,name} = this.state
-        return(
-            <div className="person-details card">
-                <img src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`} alt="" className="person-image" />
-                <div className="card-body">
-                <h4>{name}</h4>
-                <div className="list-group list group flush">
-                    <li className="list-group-item">
-                        <span className="term">Population: </span>
-                    <span>{population}</span>
-                    </li>
-                    <li className="list-group-item">
-                        <span className="term">Size: </span>
-                        <span>{size}</span>
-                    </li>
-                    <li className="list-group-item">
-                        <span className="term">Rotation Period: </span>
-                        <span>{rotationperiod}</span>
-                    </li>
-                </div>
-                </div>
-            </div>
-            
-        )
-    }
+  render() {
+
+    const { planet, loading, error } = this.state;
+    const hasData = !(loading || error)
+    const errorMessage = error ?<ErrorIndicator/> : null;
+    const spinner = loading ? <Spinner/>: null;
+    const content = hasData ? <PlanetView planet={planet}/> : null;
+    return (
+    
+      <div className="random-planet jumbotron rounded">
+        {
+          errorMessage
+        }
+        {spinner}
+        {content}
+      </div>
+
+     );
+  }
 }
 
-export default RandomPlanet
+export default RandomPlanet;
+
+const PlanetView = ({planet} )=>{
+  const {id, name, population, rotationperiod, diameter } = planet;
+
+  return  <React.Fragment> <img
+  className="planet_image"
+  src={`https://starwars-visualguide.com/assets/img/planets/${id}.jpg`}
+  alt=""
+/>
+
+
+<div>
+  <h4>{name}</h4>
+  <ul className="list-group list-group-flush">
+    <li className="list-group-item">
+      <span className="term">Population</span>
+      <span>{population}</span>
+    </li>
+    <li className="list-group-item">
+      <span className="term">Rotation Period</span>
+      <span>{rotationperiod}</span>
+    </li>
+    <li className="list-group-item">
+      <span className="term">Diameter</span>
+      <span>{diameter}</span>
+    </li>
+  </ul>
+  <button className="btn-warning">Toggle random planet</button>
+</div> </React.Fragment>
+}
