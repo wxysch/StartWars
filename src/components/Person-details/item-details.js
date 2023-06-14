@@ -2,6 +2,14 @@ import React, { Component } from "react";
 import "./person-details.css";
 import SwapiServices from "../../fetch";
 
+const Record = ({item, field,label})=>{
+  return <li className="list-group-item">
+  <span className="term">{label}</span>
+  <span>{item[field]}</span>
+</li>
+}
+export {Record}
+
 export default class ItemDetails extends Component {
   swapiServices = new SwapiServices()
   state={
@@ -27,9 +35,21 @@ export default class ItemDetails extends Component {
       this.updatePerson()
     }
   }
+  renDerItems(arr) {
+    return arr.map((item) => {
+      const {fieild,label } = item;
+
+      return (
+        <li className="list-group-item">
+  <span className="term">{fieild}</span>
+  <span>{label}</span>
+</li>
+      );
+    });
+  }
   render() {
     const {item,image}=this.state;
-    const {name,gender,birthYear,eyeColor} = item
+    const {name} = item
     if(!this.state.item){
       return <span>Select a person from list</span>
     }
@@ -41,22 +61,12 @@ export default class ItemDetails extends Component {
           src={image}
           alt=""
         />
-        <div className=" card-body">
+        <div className="card-body">
             <h4>{name}</h4>
             <ul className="list-group list-group-flush">
-                <li className="list-group-item">
-                    <span className="term">Gender</span>
-                    <span>{gender}</span>
-                </li>
-                <li className="list-group-item">
-                    <span className="term">Birth year</span>
-                    <span>{birthYear}</span>
-                </li>
-                <li className="list-group-item">
-                    <span className="term">eye Color</span>
-                    <span>{eyeColor}</span>
-                </li>
-                
+           {React.Children.map(this.props.children, (child)=>{
+              return React.cloneElement(child, {item})
+           })}              
             </ul>
         </div>
       </div>

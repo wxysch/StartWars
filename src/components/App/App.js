@@ -1,13 +1,19 @@
 import React from "react";
 import "./app.css";
 import { Component } from "react";
-import RandomPlanet from "../random-planet/random-planet";
+// import RandomPlanet from "../random-planet/random-planet";
 import Header from "../header/header";
-import PeoplePage from "../people-page/peoplePage";
+// import PeoplePage from "../people-page/peoplePage";
 import SwapiServices from "../../fetch";
-import ErrorBoundry from "../ErrorIndicator/errorBoundry";
 import Row from "../row/row";
 import ItemDetails from "../person-details/item-details";
+import { Record } from "../person-details/item-details";
+import ItemList from "../item -list/item-list";
+import{
+  PersonList,
+  PlanetList,
+  StarshipList
+} from '../sw_components/item-list'
 
 export default class App extends Component {
   swapiServices = new SwapiServices();
@@ -29,17 +35,35 @@ export default class App extends Component {
     this.setState({ selectedItem });
   };
   render() {
-    const {getPerson,getStarship, getPersonimage, getStarshipimage}= this.swapiServices
-    const planet = this.state.showRandomPlanet ? <RandomPlanet /> : null;
-    const personDetails = (<ItemDetails itemId ={11} getData = {getPerson} getImageUrl = {getPersonimage}/>) 
-    const starShipDetails = <ItemDetails itemId = {5} getData = {getStarship} getImageUrl= {getStarshipimage}/>
+    const { getPerson, getStarship, getPersonimage, getStarshipimage } =
+      this.swapiServices;
+    // const planet = this.state.showRandomPlanet ? <RandomPlanet /> : null;
+    const personDetails = (
+      <ItemDetails itemId={11} getData={getPerson} getImageUrl={getPersonimage}>
+        <Record field="gender" label="Gender" />
+        <Record field="eyeColor" label="Eye color" />
+      </ItemDetails>
+    );
+    const starShipDetails = (
+      <ItemDetails
+        itemId={5}
+        getData={getStarship}
+        getImageUrl={getStarshipimage}
+      >
+        <Record field="madel" label="Model" />
+        <Record field="length" label="Length" />
+      </ItemDetails>
+    );
     return (
       <div className="App">
         <Header />
         {/* {planet}
         <PeoplePage /> */}
-        <Row left={personDetails} rigth={starShipDetails}/>
-      </div> 
+        <PersonList>
+          {({name})=>{<span>{name}</span>}}
+        </PersonList>
+        <Row left={personDetails} rigth={starShipDetails} />
+      </div>
     );
   }
 }

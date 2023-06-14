@@ -23,7 +23,7 @@ export default class PeoplePage extends Component {
       <ErrorBoundry><ItemList
         onitemselected={this.onItemSelected}
         getData={this.swapiServices.getAllPeople}
-        renderItem={({ name, birthYear }) => `${name}(${birthYear})`}
+        
       /></ErrorBoundry>
       
     );
